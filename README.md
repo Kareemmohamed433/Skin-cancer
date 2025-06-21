@@ -1,20 +1,59 @@
-﻿# Skin-cancer
-he Skin Cancer Classifier is a web-based application designed to classify skin lesion images as benign or malignant using deep learning models. Built with TensorFlow and Flask, it leverages pre-trained convolutional neural networks (ResNet50 and MobileNetV2) and an ensemble model to predict the malignancy of skin lesions based on the HAM10000 dataset. The application provides a user-friendly interface to upload images and view predictions along with model performance metrics.
+# 🧬 Skin Cancer Classifier
 
-Note: This tool is for educational purposes only and should not be used for medical diagnosis. Always consult a healthcare professional for accurate medical advice.
+This project is a web-based application that uses Artificial Intelligence (AI) to classify skin lesions as **Benign** or **Malignant**. It uses deep learning models such as **ResNet50** and **MobileNetV2**, combined through an ensemble approach to improve classification accuracy.
 
-Features
-Image Classification: Upload a skin lesion image (PNG, JPG, JPEG) to predict whether it is benign or malignant.
-Model Ensemble: Combines predictions from ResNet50 and MobileNetV2 for improved accuracy.
-Performance Metrics: Displays accuracy, precision, recall, and F1 score for the ResNet50 model.
-Web Interface: Built with Flask and HTML, allowing users to interact with the model seamlessly.
-Dataset: Trained on the HAM10000 dataset for skin cancer classification.
-Model Performance
-The following metrics were achieved on the validation set for the ResNet50 model:
+> ⚠️ **Disclaimer**: This application is for educational and demonstration purposes only. It is not intended for real-world medical diagnosis. Always consult a certified medical professional.
 
-Accuracy: 84.97%
-Precision: 65.52%
-Recall: 48.59%
-F1 Score: 55.80%
-ROC AUC: 88.10%
-For detailed metrics on MobileNetV2 and the ensemble model, refer to the saved_models directory (resnet50_metrics.json, mobilenetv2_metrics.json, ensemble_metrics.json).
+---
+
+## 🔍 Features
+
+- 🖼️ **Image Classification**: Upload an image of a skin lesion (`.jpg`, `.png`, etc.), and the model predicts if it's benign or malignant.
+- 🧠 **Ensemble Learning**: Combines predictions from ResNet50 and MobileNetV2 for better accuracy.
+- 📊 **Performance Metrics**: Displays accuracy, precision, recall, F1-score, and ROC AUC.
+- 🌐 **Interactive Web UI**: Built with Flask, HTML, CSS (Bootstrap), and JavaScript.
+- 🧾 **Dataset**: Trained on the [HAM10000](https://www.kaggle.com/datasets/kmader/skin-cancer-mnist-ham10000) dataset — a large collection of dermatoscopic images for skin cancer classification.
+
+---
+
+## 📊 Model Performance
+
+### ✅ ResNet50 Evaluation
+
+- **Accuracy**: 84.97%  
+- **Precision**: 65.52%  
+- **Recall**: 48.59%  
+- **F1 Score**: 55.80%  
+- **ROC AUC**: 88.10%
+
+> You can find full metrics for each model in the `saved_models/` folder.
+
+---
+
+## 📁 Project Structure
+── app.py # Main Flask server
+├── templates/ # HTML templates
+├── static/ # CSS, JS, and image files
+├── uploads/ # Uploaded test images
+├── saved_models/ # Pretrained models and metrics
+│ ├── resnet50_model.h5
+│ ├── mobilenetv2_model.h5
+│ ├── ensemble_metrics.json
+│ └── ...
+├── README.md # Project documentation
+
+---
+
+## 🚀 How to Run Locally
+
+```bash
+# Step 1: Clone the repository
+git clone https://github.com/your-username/skin-cancer-classifier.git
+cd skin-cancer-classifier
+
+# Step 2: Install dependencies
+pip install -r requirements.txt
+
+# Step 3: Run the Flask server
+python app.py
+
