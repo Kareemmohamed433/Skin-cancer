@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skin Cancer Classifier</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --danger: #d64045;
+            --success: #4cb944;
+            --light: #f8f9fa;
+            --dark: #343a40;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-weight: 300;
+        }
+        
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            transition: all 0.3s;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary);
+        }
+        
+        .upload-area.highlight {
+            border-color: var(--success);
+            background-color: rgba(76, 185, 68, 0.05);
+        }
+        
+        #file-input {
+            display: none;
+        }
+        
+        .upload-btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-bottom: 1rem;
+        }
+        
+        .upload-btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        #file-name {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .result-container {
+            display: none;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .prediction {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .malignant {
+            color: var(--danger);
+        }
+        
+        .benign {
+            color: var(--success);
+        }
+        
+        .confidence {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        #preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 5px;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .metrics {
+            margin-top: 3rem;
+        }
+        
+        .metrics h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 0.5rem 0;
+        }
+        
+        .metric-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+                margin: 1rem;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Skin Cancer Classifier</h1>
+            <p class="subtitle">Upload an image of a skin lesion to check for malignancy</p>
+        </header>
+        
+        <div class="upload-area" id="upload-area">
+            <input type="file" id="file-input" accept="image/*">
+            <label for="file-input" class="upload-btn">Choose Image</label>
+            <p id="file-name">No file selected</p>
+        </div>
+        
+        <div class="result-container" id="result-container">
+            <div class="result-header">
+                <div>
+                    <span class="prediction" id="prediction-text">Prediction: </span>
+                    <span class="confidence" id="confidence-text">Confidence: </span>
+                </div>
+            </div>
+            <img id="preview-image" src="" alt="Preview">
+        </div>
+        
+        <div class="metrics">
+            <h2>Model Performance Metrics</h2>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Accuracy</div>
+                    <div class="metric-value" id="accuracy">{{ accuracy }}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Precision</div>
+                    <div class="metric-value" id="precision">{{ precision }}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Recall</div>
+                    <div class="metric-value" id="recall">{{ recall }}</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">F1 Score</div>
+                    <div class="metric-value" id="f1-score">{{ f1_score }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>This tool is for educational purposes only. Always consult a healthcare professional for medical diagnosis.</p>
+        </footer>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const uploadArea = document.getElementById('upload-area');
+        const fileName = document.getElementById('file-name');
+        const resultContainer = document.getElementById('result-container');
+        const predictionText = document.getElementById('prediction-text');
+        const confidenceText = document.getElementById('confidence-text');
+        const previewImage = document.getElementById('preview-image');
+        
+        // Handle file selection
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                fileName.textContent = file.name;
+                
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    previewImage.src = event.target.result;
+                    previewImage.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+                
+                // Upload and predict
+                uploadAndPredict(file);
+            }
+        });
+        
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('highlight');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('highlight');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('highlight');
+            
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.match('image.*')) {
+                fileInput.files = e.dataTransfer.files;
+                fileName.textContent = file.name;
+                
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    previewImage.src = event.target.result;
+                    previewImage.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+                
+                // Upload and predict
+                uploadAndPredict(file);
+            }
+        });
+        
+        // Upload file and get prediction
+        function uploadAndPredict(file) {
+            resultContainer.style.display = 'block';
+            predictionText.textContent = 'Prediction: Analyzing...';
+            confidenceText.textContent = '';
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    predictionText.textContent = 'Error: ' + data.error;
+                } else {
+                    const predictionClass = data.prediction === 'malignant' ? 'malignant' : 'benign';
+                    predictionText.textContent = 'Prediction: ' + data.prediction;
+                    predictionText.className = 'prediction ' + predictionClass;
+                    confidenceText.textContent = 'Confidence: ' + data.confidence;
+                    
+                    if (data.image_url) {
+                        previewImage.src = data.image_url;
+                    }
+                }
+            })
+            .catch(error => {
+                predictionText.textContent = 'Error: ' + error.message;
+            });
+        }
+    </script>
+</body>
+</html>
