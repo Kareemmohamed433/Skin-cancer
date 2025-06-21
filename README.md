@@ -56,4 +56,32 @@ pip install -r requirements.txt
 
 # Step 3: Run the Flask server
 python app.py
+Then open your browser and navigate to:
+👉 http://127.0.0.1:5000
 
+🛠 Tech Stack
+Backend: Python, Flask
+
+Deep Learning: TensorFlow / Keras
+
+Frontend: HTML, CSS, Bootstrap, JavaScript
+
+Deployment Tools: ngrok / Render / Heroku (optional)
+
+🎯 Future Improvements
+Support for multi-class classification (e.g., seven types of skin lesions)
+
+Integration with Grad-CAM for model explainability
+
+Deploy to cloud (e.g., AWS, Vercel)
+
+📃 License
+This project is licensed under the MIT License.
+Free to use, learn from, and improve.
+
+🙌 Acknowledgements
+HAM10000 Dataset – Kaggle
+
+TensorFlow & Keras
+
+Flask Web Framework
